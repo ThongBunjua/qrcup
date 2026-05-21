@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "QRCup (คิวอาร์คัพ) - ระบบจัดการคิวอาร์โค้ดอัจฉริยะ สำหรับธุรกิจและครีเอเตอร์",
   description: "ปรับแต่งสไตล์ สี และโลโก้คิวอาร์โค้ดของคุณ เปลี่ยนลิงก์ปลายทางได้ตลอดเวลา ข้ามหน้าต่างบราวเซอร์ LINE โดยอัตโนมัติ และติดตามสถิติด้วยความเร็วสูงด้วย Edge Caching",
+  verification: {
+    google: "zgOtjgGcdcozh9URwlrROHCg-Xok0VJEvsXpPfEVbTY",
+  },
 };
 
 export default function RootLayout({
