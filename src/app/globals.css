@@ -1,21 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --background: #020617; /* slate-950 */
-  --foreground: #f8fafc; /* slate-50 */
+  --background: #FCFAF6; /* Warm Cream Alabaster */
+  --foreground: #1e293b; /* slate-800 */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-kanit);
+  --font-sans: var(--font-prompt);
   --font-mono: var(--font-geist-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-kanit), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-prompt), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   line-height: 1.6;
 }
 

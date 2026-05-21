@@ -21,12 +21,16 @@ export default function LoginPage() {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
-        // Serialize access token to standard secure cookie for server RLS queries
-        document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=604800; SameSite=Lax; Secure`;
-        router.push('/dashboard');
+        // Safe Secure Cookie flag conditional (Secure only on HTTPS, allowing HTTP local/network testing)
+        const isSecure = window.location.protocol === 'https:' ? 'Secure;' : '';
+        document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=604800; SameSite=Lax; ${isSecure}`;
+        
+        // Trigger a hard redirect instead of soft route push to guarantee immediate cookie header propagation
+        window.location.href = '/dashboard';
       } else {
         // Clear cookie on logout
-        document.cookie = 'sb-access-token=; path=/; max-age=0; SameSite=Lax; Secure';
+        const isSecure = window.location.protocol === 'https:' ? 'Secure;' : '';
+        document.cookie = `sb-access-token=; path=/; max-age=0; SameSite=Lax; ${isSecure}`;
       }
     });
 
@@ -53,7 +57,7 @@ export default function LoginPage() {
         const { error: magicErr } = await supabase.auth.signInWithOtp({
           email,
           options: {
-            emailRedirectTo: `${window.location.origin}/dashboard`
+            emailRedirectTo: `${window.location.origin}/login`
           }
         });
         if (magicErr) throw magicErr;
@@ -75,7 +79,7 @@ export default function LoginPage() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/dashboard`
+            emailRedirectTo: `${window.location.origin}/login`
           }
         });
         if (signupErr) throw signupErr;
@@ -90,72 +94,114 @@ export default function LoginPage() {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    setError('');
+    setMessage('');
+    try {
+      const { error: googleErr } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/login`
+        }
+      });
+      if (googleErr) throw googleErr;
+    } catch (err: unknown) {
+      console.error('Google authentication failed:', err);
+      const errMsg = err instanceof Error ? err.message : 'ไม่สามารถเข้าสู่ระบบผ่านบัญชี Google ได้';
+      setError(errMsg);
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center relative px-4 overflow-hidden select-none">
-      {/* Background Neon Glow Nodes */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-lime-500/10 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
+    <div className="min-h-screen bg-[#FCFAF6] flex flex-col justify-center items-center relative px-4 overflow-hidden select-none">
+      {/* Premium organic warm gradient glow background nodes */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-100/35 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-100/25 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Main Form container */}
-      <div className="w-full max-w-md bg-slate-900/40 border border-slate-800/80 p-8 rounded-3xl backdrop-blur-xl shadow-2xl relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-tr from-lime-500/5 to-emerald-500/5 pointer-events-none" />
+      <div className="w-full max-w-md bg-white border border-slate-100 p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.02)] backdrop-blur-sm relative overflow-hidden">
         
         {/* Header */}
-        <div className="text-center space-y-2 mb-8 relative">
+        <div className="text-center space-y-3 mb-8 relative">
           <Link href="/" className="inline-block hover:opacity-90 transition-opacity">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-lime-400 to-emerald-400 p-0.5 flex items-center justify-center mx-auto shadow-lg shadow-lime-400/20">
-              <Sparkles className="w-6 h-6 text-slate-950" />
-            </div>
+            <span className="font-extrabold text-3xl tracking-tight text-slate-800">
+              QRCup
+            </span>
           </Link>
-          <h2 className="text-2xl font-black text-slate-100 tracking-tight">
-            <Link href="/" className="hover:text-lime-400 transition-colors">
-              เข้าสู่ระบบ QRCup (คิวอาร์คัพ)
-            </Link>
+          <h2 className="text-xl font-bold text-slate-800 tracking-tight">
+            เข้าสู่ระบบ QRCup (คิวอาร์คัพ)
           </h2>
-          <p className="text-sm text-slate-500">ระบบจัดการคิวอาร์โค้ดสำหรับร้านค้า ครีเอเตอร์ และ SMEs</p>
+          <p className="text-xs text-slate-450 leading-relaxed">ระบบจัดการคิวอาร์โค้ดสำหรับร้านค้า ครีเอเตอร์ และ SMEs</p>
         </div>
 
         {error && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl text-xs flex items-start gap-3 mb-5">
+          <div className="bg-red-50 border border-red-100 text-red-650 p-4 rounded-2xl text-xs flex items-start gap-3 mb-5">
             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
         )}
 
         {message && (
-          <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-2xl text-xs flex items-start gap-3 mb-5">
-            <Sparkles className="w-4 h-4 shrink-0 mt-0.5" />
+          <div className="bg-emerald-50 border border-emerald-100 text-emerald-700 p-4 rounded-2xl text-xs flex items-start gap-3 mb-5">
+            <Sparkles className="w-4 h-4 shrink-0 mt-0.5 text-emerald-500" />
             <span>{message}</span>
           </div>
         )}
 
         {/* Form controls */}
+        {/* Sleek Google Button */}
+        <div className="space-y-4 mb-4">
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={loading}
+            className="w-full py-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 font-semibold text-sm flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50 shadow-sm cursor-pointer"
+          >
+            <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+              <path fill="#EA4335" d="M12 5.04c1.62 0 3.08.56 4.22 1.66l3.15-3.15C17.45 1.76 14.93 1 12 1 7.24 1 3.22 3.74 1.3 7.73l3.77 2.92C6.01 7.24 8.79 5.04 12 5.04z" />
+              <path fill="#4285F4" d="M23.49 12.27c0-.81-.07-1.59-.2-2.34H12v4.43h6.44c-.28 1.48-1.12 2.73-2.38 3.58v2.97h3.84c2.25-2.07 3.59-5.12 3.59-8.64z" />
+              <path fill="#FBBC05" d="M5.07 10.65c-.25-.73-.39-1.51-.39-2.32s.14-1.59.39-2.32L1.3 7.09C.47 8.75 0 10.59 0 12.5s.47 3.75 1.3 5.41l3.77-2.92c-.25-.73-.39-1.51-.39-2.32z" />
+              <path fill="#34A853" d="M12 23c3.24 0 5.97-1.07 7.96-2.92l-3.84-2.97c-1.07.72-2.44 1.15-4.12 1.15-3.21 0-5.99-2.2-6.96-5.61l-3.77 2.92C3.22 20.26 7.24 23 12 23z" />
+            </svg>
+            <span>เข้าสู่ระบบด้วย Google</span>
+          </button>
+
+          {/* Divider */}
+          <div className="relative flex py-2 items-center">
+            <div className="flex-grow border-t border-slate-100"></div>
+            <span className="flex-shrink mx-4 text-slate-400 text-[10px] font-bold tracking-wider uppercase">หรือ</span>
+            <div className="flex-grow border-t border-slate-100"></div>
+          </div>
+        </div>
+
         <form onSubmit={handleAuth} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">ที่อยู่อีเมล</label>
+            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">ที่อยู่อีเมล</label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-500 absolute left-4 top-3.5" />
+              <Mail className="w-4 h-4 text-slate-400 absolute left-4 top-3.5" />
               <input
                 type="email"
                 placeholder="you@domain.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-slate-950/60 border border-slate-800 hover:border-slate-700/80 focus:border-lime-400 rounded-2xl pl-12 pr-4 py-3 text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-lime-400/10 transition-all text-sm"
+                className="w-full bg-[#FCFAF6] border border-slate-200 hover:border-slate-350 focus:border-emerald-500 rounded-2xl pl-12 pr-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 transition-all text-sm font-normal"
               />
             </div>
           </div>
 
           {mode !== 'magic' && (
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">รหัสผ่าน</label>
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">รหัสผ่าน</label>
               <div className="relative">
-                <KeyRound className="w-4 h-4 text-slate-500 absolute left-4 top-3.5" />
+                <KeyRound className="w-4 h-4 text-slate-400 absolute left-4 top-3.5" />
                 <input
                   type="password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-slate-950/60 border border-slate-800 hover:border-slate-700/80 focus:border-lime-400 rounded-2xl pl-12 pr-4 py-3 text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-lime-400/10 transition-all text-sm"
+                  className="w-full bg-[#FCFAF6] border border-slate-200 hover:border-slate-350 focus:border-emerald-500 rounded-2xl pl-12 pr-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/5 transition-all text-sm font-normal"
                 />
               </div>
             </div>
@@ -164,7 +210,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 bg-gradient-to-r from-lime-400 to-emerald-400 hover:from-lime-300 hover:to-emerald-300 text-slate-950 font-bold rounded-2xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-lime-400/10 active:scale-95 transition-all disabled:opacity-50"
+            className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl text-sm flex items-center justify-center gap-2 shadow-sm shadow-emerald-500/10 active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
           >
             {loading ? (
               <Loader className="w-4 h-4 animate-spin" />
@@ -178,15 +224,15 @@ export default function LoginPage() {
         </form>
 
         {/* Tab Toggle Switchers */}
-        <div className="flex flex-col items-center gap-3 mt-6 pt-5 border-t border-slate-800/80 text-xs">
+        <div className="flex flex-col items-center gap-3 mt-6 pt-5 border-t border-slate-100 text-xs">
           {mode === 'login' && (
             <>
-              <button onClick={() => setMode('magic')} className="text-lime-400 hover:text-lime-300 font-semibold transition-colors">
+              <button onClick={() => setMode('magic')} className="text-emerald-650 hover:text-emerald-700 font-semibold transition-colors cursor-pointer">
                 เข้าสู่ระบบด้วย Magic Link (ไม่ต้องใช้รหัสผ่าน)
               </button>
-              <span className="text-slate-600">
+              <span className="text-slate-450">
                 ยังไม่มีบัญชีผู้ใช้?{' '}
-                <button onClick={() => setMode('signup')} className="text-slate-300 hover:text-slate-100 font-semibold transition-colors">
+                <button onClick={() => setMode('signup')} className="text-slate-600 hover:text-slate-800 font-semibold transition-colors cursor-pointer">
                   สร้างบัญชีฟรีที่นี่
                 </button>
               </span>
@@ -194,9 +240,9 @@ export default function LoginPage() {
           )}
 
           {mode === 'signup' && (
-            <span className="text-slate-600">
+            <span className="text-slate-450">
               มีบัญชีผู้ใช้แล้วใช่หรือไม่?{' '}
-              <button onClick={() => setMode('login')} className="text-lime-400 hover:text-lime-300 font-semibold transition-colors">
+              <button onClick={() => setMode('login')} className="text-emerald-650 hover:text-emerald-700 font-semibold transition-colors cursor-pointer">
                 เข้าสู่ระบบ
               </button>
             </span>
@@ -204,12 +250,12 @@ export default function LoginPage() {
 
           {mode === 'magic' && (
             <>
-              <button onClick={() => setMode('login')} className="text-lime-400 hover:text-lime-300 font-semibold transition-colors">
+              <button onClick={() => setMode('login')} className="text-emerald-650 hover:text-emerald-700 font-semibold transition-colors cursor-pointer">
                 เข้าสู่ระบบด้วยรหัสผ่านแทน
               </button>
-              <span className="text-slate-600">
+              <span className="text-slate-450">
                 ยังไม่มีบัญชีผู้ใช้?{' '}
-                <button onClick={() => setMode('signup')} className="text-slate-300 hover:text-slate-100 font-semibold transition-colors">
+                <button onClick={() => setMode('signup')} className="text-slate-600 hover:text-slate-800 font-semibold transition-colors cursor-pointer">
                   สร้างบัญชีฟรีที่นี่
                 </button>
               </span>

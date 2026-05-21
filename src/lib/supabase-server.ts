@@ -29,7 +29,7 @@ export const getSupabaseServer = async () => {
     console.error('getSupabaseServer: cookies reading failed', error);
   }
 
-  return createClient(supabaseUrl, supabaseAnonKey, {
+  const client = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
@@ -38,6 +38,19 @@ export const getSupabaseServer = async () => {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     },
   });
+
+  if (token) {
+    try {
+      await client.auth.setSession({
+        access_token: token,
+        refresh_token: token, // Pass token as a non-empty string to avoid AuthSessionMissingError
+      });
+    } catch (err) {
+      console.error('getSupabaseServer: failed to set auth session:', err);
+    }
+  }
+
+  return client;
 };
 
 // 2. Admin Client (RLS Immune - Server Only)

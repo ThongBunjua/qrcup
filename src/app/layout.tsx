@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Kanit, Geist_Mono } from "next/font/google";
+import { Prompt, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const kanit = Kanit({
+const prompt = Prompt({
   weight: ["300", "400", "500", "600", "700", "800"],
   subsets: ["thai", "latin"],
-  variable: "--font-kanit",
+  variable: "--font-prompt",
 });
 
 const geistMono = Geist_Mono({
@@ -26,9 +26,9 @@ export default function RootLayout({
   return (
     <html
       lang="th"
-      className={`${kanit.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${prompt.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-slate-950 text-slate-100">{children}</body>
+      <body className="min-h-full flex flex-col bg-[#FCFAF6] text-slate-800">{children}</body>
     </html>
   );
 }

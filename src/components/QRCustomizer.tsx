@@ -279,14 +279,14 @@ export default function QRCustomizer({ initialData, onSave, onCancel, isSaving }
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       {/* Editor Controls Form */}
-      <form onSubmit={handleSubmit} className="lg:col-span-7 bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 lg:p-8 space-y-6 shadow-2xl">
-        <h2 className="text-xl font-semibold text-slate-100 flex items-center gap-3">
-          <Palette className="w-5 h-5 text-lime-400" />
+      <form onSubmit={handleSubmit} className="lg:col-span-7 bg-white border border-slate-100 rounded-3xl p-6 lg:p-8 space-y-6 shadow-sm">
+        <h2 className="text-xl font-bold text-slate-800 flex items-center gap-3">
+          <Palette className="w-5 h-5 text-emerald-500" />
           {initialData?.id ? 'แก้ไขคิวอาร์โค้ดอัจฉริยะ' : 'ออกแบบคิวอาร์โค้ดใหม่'}
         </h2>
 
         {validationError && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl flex items-center gap-3 text-sm">
+          <div className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-2xl flex items-center gap-3 text-sm">
             <AlertTriangle className="w-5 h-5 shrink-0" />
             <span>{validationError}</span>
           </div>
@@ -295,7 +295,7 @@ export default function QRCustomizer({ initialData, onSave, onCancel, isSaving }
         <div className="space-y-5">
           {/* Title Input */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
+            <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
               <FileText className="w-4 h-4 text-slate-400" />
               ชื่อคิวอาร์โค้ด
             </label>
@@ -304,13 +304,13 @@ export default function QRCustomizer({ initialData, onSave, onCancel, isSaving }
               placeholder="เช่น เมนูโต๊ะ 4, ลิงก์ IG ร้าน, ไลน์ร้าน"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-400 transition-all"
+              className="w-full bg-[#FCFAF6] border border-slate-200 rounded-2xl px-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-sm"
             />
           </div>
 
           {/* Target URL */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
+            <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
               <Link className="w-4 h-4 text-slate-400" />
               ลิงก์ปลายทาง (Target URL)
             </label>
@@ -319,9 +319,9 @@ export default function QRCustomizer({ initialData, onSave, onCancel, isSaving }
               placeholder="https://example.com/menu"
               value={targetUrl}
               onChange={(e) => setTargetUrl(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-400 transition-all"
+              className="w-full bg-[#FCFAF6] border border-slate-200 rounded-2xl px-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-sm"
             />
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-400">
               คุณสามารถแก้ไขลิงก์ปลายทางนี้เมื่อไหร่ก็ได้ในภายหลัง โดยรูปคิวอาร์โค้ดที่ดาวน์โหลดหรือพิมพ์ออกไปแล้วจะยังใช้ได้เหมือนเดิม!
             </p>
           </div>
@@ -329,65 +329,65 @@ export default function QRCustomizer({ initialData, onSave, onCancel, isSaving }
           {/* Color pickers */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Foreground */}
-            <div className="bg-slate-950/60 border border-slate-800/80 rounded-xl p-4 space-y-3">
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">สีหลักของคิวอาร์ (Foreground)</span>
+            <div className="bg-[#FCFAF6] border border-slate-200/60 rounded-2xl p-4 space-y-3">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">สีหลักของคิวอาร์ (Foreground)</span>
               <div className="flex items-center gap-4">
                 <input
                   type="color"
                   value={fgColor}
                   onChange={(e) => setFgColor(e.target.value)}
-                  className="w-12 h-12 bg-transparent border-0 rounded cursor-pointer shrink-0"
+                  className="w-12 h-12 bg-transparent border-0 rounded-xl cursor-pointer shrink-0"
                 />
                 <input
                   type="text"
                   value={fgColor.toUpperCase()}
                   onChange={(e) => setFgColor(e.target.value)}
                   maxLength={7}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-sm text-slate-200 font-mono focus:outline-none focus:border-slate-600"
+                  className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-sm text-slate-700 font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500"
                 />
               </div>
             </div>
 
             {/* Background */}
-            <div className="bg-slate-950/60 border border-slate-800/80 rounded-xl p-4 space-y-3">
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">สีพื้นหลังคิวอาร์ (Background)</span>
+            <div className="bg-[#FCFAF6] border border-slate-200/60 rounded-2xl p-4 space-y-3">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">สีพื้นหลังคิวอาร์ (Background)</span>
               <div className="flex items-center gap-4">
                 <input
                   type="color"
                   value={bgColor}
                   onChange={(e) => setBgColor(e.target.value)}
-                  className="w-12 h-12 bg-transparent border-0 rounded cursor-pointer shrink-0"
+                  className="w-12 h-12 bg-transparent border-0 rounded-xl cursor-pointer shrink-0"
                 />
                 <input
                   type="text"
                   value={bgColor.toUpperCase()}
                   onChange={(e) => setBgColor(e.target.value)}
                   maxLength={7}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-sm text-slate-200 font-mono focus:outline-none focus:border-slate-600"
+                  className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-sm text-slate-700 font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500"
                 />
               </div>
             </div>
           </div>
 
           {/* Logo Uploader */}
-          <div className="bg-slate-950/60 border border-slate-800/80 rounded-xl p-5 space-y-4">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">วางโลโก้ตรงกลางคิวอาร์โค้ด</span>
+          <div className="bg-[#FCFAF6] border border-slate-200/60 rounded-2xl p-5 space-y-4">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">วางโลโก้ตรงกลางคิวอาร์โค้ด</span>
             <div className="flex items-center gap-4">
               {logoUrl ? (
-                <div className="relative w-16 h-16 rounded-xl border border-slate-700 bg-slate-900 p-2 flex items-center justify-center group shrink-0">
+                <div className="relative w-16 h-16 rounded-2xl border border-slate-200 bg-white p-2 flex items-center justify-center group shrink-0 shadow-sm">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={logoUrl} alt="Logo" className="max-w-full max-h-full object-contain rounded" />
+                  <img src={logoUrl} alt="Logo" className="max-w-full max-h-full object-contain rounded-lg" />
                   <button
                     type="button"
                     onClick={() => setLogoUrl('')}
-                    className="absolute -top-1.5 -right-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full p-0.5 text-xs transition-colors"
+                    className="absolute -top-1.5 -right-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs transition-colors shadow-sm font-bold"
                   >
                     ×
                   </button>
                 </div>
               ) : (
-                <label className="w-16 h-16 rounded-xl border border-dashed border-slate-700 hover:border-lime-500/60 bg-slate-900 hover:bg-slate-900/80 flex flex-col items-center justify-center cursor-pointer transition-all shrink-0">
-                  <Upload className="w-5 h-5 text-slate-500" />
+                <label className="w-16 h-16 rounded-2xl border border-dashed border-slate-300 hover:border-emerald-500/60 bg-white hover:bg-slate-50/50 flex flex-col items-center justify-center cursor-pointer transition-all shrink-0 shadow-sm">
+                  <Upload className="w-5 h-5 text-slate-400" />
                   <input
                     type="file"
                     accept="image/*"
@@ -399,32 +399,32 @@ export default function QRCustomizer({ initialData, onSave, onCancel, isSaving }
               )}
 
               <div className="space-y-1">
-                <span className="text-sm font-medium text-slate-300">
+                <span className="text-sm font-semibold text-slate-700">
                   {uploading ? 'กำลังอัปโหลดโลโก้...' : logoUrl ? 'อัปโหลดโลโก้สำเร็จ' : 'อัปโหลดโลโก้ร้านค้า'}
                 </span>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-400">
                   รองรับ PNG/JPG แนะนำรูปจัตุรัสที่มีคอนทราสต์สูง ขนาดไม่เกิน 1MB
                 </p>
-                {uploadError && <p className="text-xs text-red-400">{uploadError}</p>}
+                {uploadError && <p className="text-xs text-red-500">{uploadError}</p>}
               </div>
             </div>
           </div>
 
           {/* Active Flag */}
-          <div className="flex items-center justify-between bg-slate-950/40 border border-slate-800/60 rounded-xl p-4">
-            <div className="space-y-0.5">
-              <span className="text-sm font-medium text-slate-200">เปิดใช้งานให้สแกน (Active Scan Redirection)</span>
-              <p className="text-xs text-slate-500">หากปิดการใช้งาน ผู้ที่สแกนจะพบหน้าจอแจ้งเตือนปิดปรับปรุงชั่วคราวแทนการไปยังเป้าหมาย</p>
+          <div className="flex items-center justify-between bg-[#FCFAF6] border border-slate-200/60 rounded-2xl p-4">
+            <div className="space-y-0.5 pr-4">
+              <span className="text-sm font-bold text-slate-800">เปิดใช้งานให้สแกน (Active Scan Redirection)</span>
+              <p className="text-xs text-slate-400">หากปิดการใช้งาน ผู้ที่สแกนจะพบหน้าจอแจ้งเตือนปิดปรับปรุงชั่วคราวแทนการไปยังเป้าหมาย</p>
             </div>
             <button
               type="button"
               onClick={() => setIsActive(!isActive)}
-              className={`w-12 h-6 rounded-full p-1 transition-all ${
-                isActive ? 'bg-lime-400' : 'bg-slate-800'
+              className={`w-12 h-6 rounded-full p-1 transition-all shrink-0 ${
+                isActive ? 'bg-emerald-500' : 'bg-slate-200'
               }`}
             >
               <div
-                className={`w-4 h-4 rounded-full bg-slate-950 transition-all ${
+                className={`w-4 h-4 rounded-full bg-white transition-all ${
                   isActive ? 'translate-x-6' : 'translate-x-0'
                 }`}
               />
@@ -433,18 +433,18 @@ export default function QRCustomizer({ initialData, onSave, onCancel, isSaving }
         </div>
 
         {/* Footer Actions */}
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
           <button
             type="button"
             onClick={onCancel}
-            className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700/80 text-slate-300 font-medium rounded-xl text-sm transition-colors"
+            className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200/80 text-slate-700 font-semibold rounded-2xl text-sm transition-all"
           >
             ยกเลิก
           </button>
           <button
             type="submit"
             disabled={isSaving || uploading}
-            className="px-6 py-2.5 bg-gradient-to-r from-lime-400 to-teal-500 hover:from-lime-300 hover:to-teal-400 text-slate-950 font-semibold rounded-xl text-sm flex items-center gap-2 shadow-lg shadow-lime-950/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl text-sm flex items-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             {isSaving ? (
               <>
@@ -462,34 +462,34 @@ export default function QRCustomizer({ initialData, onSave, onCancel, isSaving }
       </form>
 
       {/* Real-time Preview Panel */}
-      <div className="lg:col-span-5 flex flex-col items-center gap-6 bg-slate-900/30 border border-slate-800/60 rounded-2xl p-6 lg:p-8 shadow-2xl">
-        <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest">ตัวอย่างแบบเรียลไทม์</span>
+      <div className="lg:col-span-5 flex flex-col items-center gap-6 bg-white border border-slate-100 rounded-3xl p-6 lg:p-8 shadow-sm">
+        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">ตัวอย่างแบบเรียลไทม์</span>
 
         {/* QR Frame Container */}
-        <div className="bg-slate-950/80 p-8 rounded-3xl border border-slate-800 shadow-inner flex items-center justify-center relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-tr from-lime-500/5 to-transparent pointer-events-none" />
+        <div className="bg-[#FCFAF6] p-8 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-center relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/2 to-transparent pointer-events-none" />
           <canvas
             ref={canvasRef}
-            className="w-64 h-64 md:w-72 md:h-72 object-contain rounded-xl border border-slate-800 shadow-2xl bg-white"
+            className="w-64 h-64 md:w-72 md:h-72 object-contain rounded-2xl border border-slate-100 shadow-md bg-white"
           />
         </div>
 
         {/* Dynamic Warning for Customizer context */}
         {!initialData?.id && (
-          <p className="text-xs text-center text-slate-500 max-w-xs">
-            นี่คือตัวอย่างดีไซน์คิวอาร์โค้ดของคุณ เมื่อบันทึกเรียบร้อยการสแกนจริงจะวาร์ปไปยังลิงก์ปลายทางทันที
+          <p className="text-xs text-center text-slate-400 max-w-xs leading-relaxed">
+            นี่คือตัวอย่างดีไซน์คิวอาร์โค้ดของคุณ เมื่อบันทึกเรียบร้อยการสแกนจริงจะนำทางไปยังลิงก์ปลายทางทันที
           </p>
         )}
 
         {/* Download actions (Only if QR exists) */}
         {initialData?.id ? (
           <div className="w-full space-y-3 pt-2">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest text-center block">ดาวน์โหลดคิวอาร์โค้ด</span>
-            <div className="grid grid-cols-2 gap-3">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest text-center block">ดาวน์โหลดคิวอาร์โค้ด</span>
+            <div className="grid grid-cols-1 gap-2.5">
               <button
                 type="button"
                 onClick={downloadPNG}
-                className="py-2.5 px-4 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 border border-slate-700/60 hover:border-slate-600 transition-all shadow-md"
+                className="py-3 px-4 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 border border-emerald-100/50 transition-all shadow-sm"
               >
                 <Download className="w-3.5 h-3.5" />
                 ดาวน์โหลด PNG (ความละเอียดสูง)
@@ -497,7 +497,7 @@ export default function QRCustomizer({ initialData, onSave, onCancel, isSaving }
               <button
                 type="button"
                 onClick={downloadSVG}
-                className="py-2.5 px-4 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 border border-slate-700/60 hover:border-slate-600 transition-all shadow-md"
+                className="py-3 px-4 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 border border-slate-200/60 transition-all shadow-sm"
               >
                 <Download className="w-3.5 h-3.5" />
                 ดาวน์โหลด SVG (สำหรับโรงพิมพ์)
@@ -505,7 +505,7 @@ export default function QRCustomizer({ initialData, onSave, onCancel, isSaving }
             </div>
           </div>
         ) : (
-          <div className="text-xs text-slate-500 text-center italic">
+          <div className="text-xs text-slate-400 text-center italic">
             บันทึกคิวอาร์โค้ดก่อนเพื่อดาวน์โหลดไฟล์งานพิมพ์ความละเอียดสูง
           </div>
         )}
