@@ -7,6 +7,7 @@ interface QRData {
   id: string;
   target_url: string;
   is_active: boolean;
+  user_id: string;
 }
 
 export async function GET(
@@ -17,13 +18,17 @@ export async function GET(
 
   try {
     let qrCode: QRData | null = null;
+    let ownerPlan: 'free' | 'pro' = 'free';
 
     // 1. Try Cache Lookup (Redis)
     if (redis) {
       try {
         const cached = await redis.get<string>(`qr:${shortCode}`);
         if (cached) {
-          qrCode = typeof cached === 'string' ? JSON.parse(cached) : cached;
+          const parsed = typeof cached === 'string' ? JSON.parse(cached) : cached;
+          qrCode = parsed;
+          // Cache stores owner plan
+          ownerPlan = parsed.owner_plan || 'free';
         }
       } catch (cacheErr) {
         console.error('Redis cache lookup failed:', cacheErr);
@@ -35,7 +40,7 @@ export async function GET(
       const supabase = getSupabaseAdmin();
       const { data, error } = await supabase
         .from('qr_codes')
-        .select('id, target_url, is_active')
+        .select('id, target_url, is_active, user_id')
         .eq('short_code', shortCode)
         .single();
 
@@ -45,10 +50,25 @@ export async function GET(
 
       qrCode = data as QRData;
 
-      // Write-back to Redis cache (24 hours TTL = 86400s)
+      // Fetch owner's plan from users table
+      const { data: profile } = await supabase
+        .from('users')
+        .select('plan, email:id')
+        .eq('id', data.user_id)
+        .single();
+
+      // Check if admin email via auth
+      const { data: authUser } = await supabase.auth.admin.getUserById(data.user_id);
+      const isAdmin = authUser?.user?.email === 'admin@qrcup.com';
+      ownerPlan = isAdmin ? 'pro' : (profile?.plan || 'free') as 'free' | 'pro';
+
+      // Write-back to Redis cache with owner_plan (24 hours TTL = 86400s)
       if (redis && qrCode) {
         try {
-          await redis.set(`qr:${shortCode}`, JSON.stringify(qrCode), { ex: 86400 });
+          await redis.set(`qr:${shortCode}`, JSON.stringify({
+            ...qrCode,
+            owner_plan: ownerPlan,
+          }), { ex: 86400 });
         } catch (cacheSetErr) {
           console.error('Redis cache write failed:', cacheSetErr);
         }
@@ -124,27 +144,30 @@ export async function GET(
 
     // 6. Redirection Strategies
     
-    // Strategy A: Escaping LINE In-App Browser Trap
+    // Strategy A: Escaping LINE In-App Browser Trap (Available for ALL plans)
     if (browser === 'LINE') {
       const escapedUrl = appendLineEscapeParam(qrCode.target_url);
       return NextResponse.redirect(escapedUrl, 302);
     }
 
-    // Strategy B: Thai Localized Deep-Linking (Mobile Only)
-    const isMobile = deviceType === 'iOS' || deviceType === 'Android';
-    if (isMobile) {
-      const nativeScheme = mapUrlToNativeScheme(qrCode.target_url);
-      if (nativeScheme) {
-        // Returns the custom deep-link loader page
-        const html = buildDeepLinkHtml(qrCode.target_url, nativeScheme);
-        return new NextResponse(html, {
-          headers: {
-            'Content-Type': 'text/html',
-            'Cache-Control': 'no-store, max-age=0, must-revalidate',
-          },
-        });
+    // Strategy B: Thai Localized Deep-Linking (PRO PLAN ONLY, Mobile Only)
+    if (ownerPlan === 'pro') {
+      const isMobile = deviceType === 'iOS' || deviceType === 'Android';
+      if (isMobile) {
+        const nativeScheme = mapUrlToNativeScheme(qrCode.target_url);
+        if (nativeScheme) {
+          // Returns the custom deep-link loader page
+          const html = buildDeepLinkHtml(qrCode.target_url, nativeScheme);
+          return new NextResponse(html, {
+            headers: {
+              'Content-Type': 'text/html',
+              'Cache-Control': 'no-store, max-age=0, must-revalidate',
+            },
+          });
+        }
       }
     }
+    // Free plan: Skip deep-linking entirely, use standard redirect below
 
     // Strategy C: High-Speed Standard Redirection
     return NextResponse.redirect(qrCode.target_url, 302);

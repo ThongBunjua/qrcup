@@ -117,6 +117,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to generate a unique short code. Please try again.' }, { status: 500 });
     }
 
+    // Enforce default config for Free plan (prevent bypass)
+    const sanitizedConfig = plan === 'free'
+      ? { fgColor: '#020617', bgColor: '#ffffff', logoUrl: '' }
+      : (config || {});
+
     // Insert QR Code (respects RLS)
     const { data: newQR, error: insertError } = await supabase
       .from('qr_codes')
@@ -125,7 +130,7 @@ export async function POST(request: NextRequest) {
         short_code: shortCode,
         title,
         target_url,
-        config: config || {},
+        config: sanitizedConfig,
         is_active: true
       })
       .select()
@@ -193,13 +198,18 @@ export async function PUT(request: NextRequest) {
       }, { status: 403 });
     }
 
+    // Enforce default config for Free plan (prevent bypass)
+    const sanitizedConfig = plan === 'free'
+      ? { fgColor: '#020617', bgColor: '#ffffff', logoUrl: '' }
+      : (config || {});
+
     // Update the QR Code (respects RLS)
     const { data: updatedQR, error: updateError } = await supabase
       .from('qr_codes')
       .update({
         title,
         target_url,
-        config: config || {},
+        config: sanitizedConfig,
         is_active: is_active !== undefined ? is_active : true,
         updated_at: new Date().toISOString()
       })

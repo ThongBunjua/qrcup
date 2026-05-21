@@ -112,7 +112,7 @@ export function buildDeepLinkHtml(targetUrl: string, nativeScheme: string): stri
   <title>กำลังวาร์ป...</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
@@ -123,9 +123,9 @@ export function buildDeepLinkHtml(targetUrl: string, nativeScheme: string): stri
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background-color: #030712;
-      color: #f3f4f6;
-      font-family: 'Kanit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #FCFAF6;
+      color: #1e293b;
+      font-family: 'Prompt', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       overflow: hidden;
     }
     .container {
@@ -138,28 +138,35 @@ export function buildDeepLinkHtml(targetUrl: string, nativeScheme: string): stri
     .spinner {
       width: 56px;
       height: 56px;
-      border: 4px solid rgba(163, 230, 53, 0.1);
-      border-top: 4px solid #a3e635;
+      border: 4px solid rgba(16, 185, 129, 0.1);
+      border-top: 4px solid #10b981;
       border-radius: 50%;
       animation: spin 0.8s cubic-bezier(0.5, 0.1, 0.1, 0.9) infinite;
       margin-bottom: 28px;
-      box-shadow: 0 0 15px rgba(163, 230, 53, 0.1);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.08);
     }
     .text {
       font-size: 18px;
-      font-weight: 500;
-      color: #a3e635;
-      text-shadow: 0 0 12px rgba(163, 230, 53, 0.2);
+      font-weight: 600;
+      color: #10b981;
       text-align: center;
       padding: 0 20px;
     }
     .subtext {
       font-size: 13px;
-      color: #6b7280;
+      color: #64748b;
       margin-top: 8px;
       text-align: center;
       padding: 0 30px;
       max-width: 280px;
+      line-height: 1.6;
+    }
+    .brand {
+      position: fixed;
+      bottom: 24px;
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 500;
     }
     @keyframes spin {
       0% { transform: rotate(0deg); }
@@ -177,6 +184,7 @@ export function buildDeepLinkHtml(targetUrl: string, nativeScheme: string): stri
     <div class="text">กำลังวาร์ปคุณเข้าสู่แอป...</div>
     <div class="subtext">ระบบกำลังเปิดแอปพลิเคชันอย่างรวดเร็ว หากไม่เปิดขึ้นมาอัตโนมัติ จะนำทางผ่านเว็บบราวเซอร์ทันที</div>
   </div>
+  <div class="brand">QRCup — คิวอาร์โค้ดอัจฉริยะ</div>
 
   <script>
     (function() {

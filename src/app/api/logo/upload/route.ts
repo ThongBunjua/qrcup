@@ -12,6 +12,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'ไม่ได้รับสิทธิ์เข้าใช้งาน กรุณาเข้าสู่ระบบอีกครั้ง' }, { status: 401 });
     }
 
+    // 1.5 Plan Check — Block Free plan users from uploading logos
+    const { data: profile } = await supabase
+      .from('users')
+      .select('plan')
+      .eq('id', user.id)
+      .single();
+
+    const plan = user.email === 'admin@qrcup.com' ? 'pro' : (profile?.plan || 'free');
+
+    if (plan === 'free') {
+      return NextResponse.json({ error: 'ฟีเจอร์อัปโหลดโลโก้สำหรับสมาชิก Pro เท่านั้น กรุณาอัปเกรดเพื่อใช้งาน' }, { status: 403 });
+    }
+
     // 2. Parse FormData
     const formData = await request.formData();
     const file = formData.get('file') as File;

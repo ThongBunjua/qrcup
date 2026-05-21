@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import QRCustomizer from '@/components/QRCustomizer';
 import QRAnalytics from '@/components/QRAnalytics';
 import { 
   Sparkles, Plus, Search, QrCode, BarChart3, Edit3, Trash2, 
-  ArrowUpRight, Lock, ShieldAlert, CreditCard, RefreshCw 
+  ArrowUpRight, Lock, ShieldAlert, CreditCard, RefreshCw, X, AlertTriangle, CheckCircle2 
 } from 'lucide-react';
 
 interface QRCodeData {
@@ -42,7 +42,17 @@ export default function DashboardPage() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [selectedInterval, setSelectedInterval] = useState<'monthly' | 'yearly'>('yearly');
 
-  const fetchData = React.useCallback(async () => {
+  // Toast notification state (replaces browser alert())
+  const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' | 'warning' } | null>(null);
+
+  // Auto-dismiss toast after 5 seconds
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 5000);
+    return () => clearTimeout(timer);
+  }, [toast]);
+
+  const fetchData = useCallback(async () => {
     try {
       const res = await fetch('/api/qr');
       const data = await res.json();
@@ -99,7 +109,7 @@ export default function DashboardPage() {
         setQrCodes(prev => prev.filter(item => item.id !== id));
       } else {
         const data = await res.json();
-        alert(data.error || 'การลบคิวอาร์โค้ดล้มเหลว');
+        setToast({ message: data.error || 'การลบคิวอาร์โค้ดล้มเหลว', type: 'error' });
       }
     } catch (err) {
       console.error('Delete QR failed:', err);
@@ -132,7 +142,7 @@ export default function DashboardPage() {
         setActiveView('list');
         setSelectedQR(null);
       } else {
-        alert(data.error || 'การบันทึกคิวอาร์โค้ดล้มเหลว');
+        setToast({ message: data.error || 'การบันทึกคิวอาร์โค้ดล้มเหลว', type: 'error' });
       }
     } catch (err) {
       console.error('Save QR failed:', err);
@@ -154,7 +164,7 @@ export default function DashboardPage() {
       if (res.ok && data.url) {
         window.location.href = data.url;
       } else {
-        alert(data.error || 'ไม่สามารถเปิดหน้าชำระเงินของ Stripe ได้');
+        setToast({ message: data.error || 'ไม่สามารถเปิดหน้าชำระเงินของ Stripe ได้', type: 'error' });
       }
     } catch (err) {
       console.error('Stripe checkout failed:', err);
@@ -172,7 +182,7 @@ export default function DashboardPage() {
       if (res.ok && data.url) {
         window.location.href = data.url;
       } else {
-        alert(data.error || 'ไม่สามารถเข้าสู่แผงจัดการชำระเงิน Stripe ได้');
+        setToast({ message: data.error || 'ไม่สามารถเข้าสู่แผงจัดการชำระเงิน Stripe ได้', type: 'error' });
       }
     } catch (err) {
       console.error('Stripe portal failed:', err);
@@ -401,13 +411,21 @@ export default function DashboardPage() {
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => {
-                              setSelectedQR(qr);
-                              setActiveView('analytics');
+                              if (plan === 'free') {
+                                setShowUpgradeModal(true);
+                              } else {
+                                setSelectedQR(qr);
+                                setActiveView('analytics');
+                              }
                             }}
-                            className="p-2 hover:bg-slate-50 text-slate-400 hover:text-slate-700 rounded-xl transition-all cursor-pointer"
-                            title="ดูรายงานวิเคราะห์สถิติ"
+                            className={`p-2 rounded-xl transition-all cursor-pointer ${
+                              plan === 'free'
+                                ? 'text-amber-400 hover:bg-amber-50 hover:text-amber-600'
+                                : 'text-slate-400 hover:bg-slate-50 hover:text-slate-700'
+                            }`}
+                            title={plan === 'free' ? 'อัปเกรดเป็น Pro เพื่อดูสถิติเชิงลึก' : 'ดูรายงานวิเคราะห์สถิติ'}
                           >
-                            <BarChart3 className="w-4.5 h-4.5" />
+                            {plan === 'free' ? <Lock className="w-4 h-4" /> : <BarChart3 className="w-4.5 h-4.5" />}
                           </button>
                           
                           <button
@@ -447,7 +465,9 @@ export default function DashboardPage() {
             <QRCustomizer
               onSave={handleSaveQR}
               onCancel={() => setActiveView('list')}
+              onUpgrade={() => setShowUpgradeModal(true)}
               isSaving={savingLoading}
+              plan={plan}
             />
           )}
 
@@ -460,7 +480,9 @@ export default function DashboardPage() {
                 setActiveView('list');
                 setSelectedQR(null);
               }}
+              onUpgrade={() => setShowUpgradeModal(true)}
               isSaving={savingLoading}
+              plan={plan}
             />
           )}
 
@@ -565,6 +587,30 @@ export default function DashboardPage() {
                 {checkoutLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : 'ดำเนินการต่อ'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification (replaces browser alert) */}
+      {toast && (
+        <div className="fixed top-6 right-6 z-[60] animate-in slide-in-from-top-2 fade-in duration-300 max-w-sm w-full">
+          <div className={`flex items-start gap-3 p-4 rounded-2xl border shadow-lg ${
+            toast.type === 'error' ? 'bg-red-50 border-red-100 text-red-700' :
+            toast.type === 'warning' ? 'bg-amber-50 border-amber-100 text-amber-700' :
+            'bg-emerald-50 border-emerald-100 text-emerald-700'
+          }`}>
+            <div className="shrink-0 mt-0.5">
+              {toast.type === 'error' ? <AlertTriangle className="w-4 h-4" /> :
+               toast.type === 'warning' ? <ShieldAlert className="w-4 h-4" /> :
+               <CheckCircle2 className="w-4 h-4" />}
+            </div>
+            <p className="text-xs font-semibold leading-relaxed flex-1">{toast.message}</p>
+            <button
+              onClick={() => setToast(null)}
+              className="shrink-0 p-1 rounded-lg hover:bg-white/50 transition-colors"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
       )}
