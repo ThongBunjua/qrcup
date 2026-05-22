@@ -10,7 +10,7 @@ export const getStripeClient = (): Stripe | null => {
 
   return new Stripe(stripeSecretKey, {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    apiVersion: '2025-01-27' as any, // Keep it pinned to a modern stable version
+    apiVersion: '2025-01-27.acacia' as any, // Keep it pinned to a modern stable version
   });
 };
 
