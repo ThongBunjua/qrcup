@@ -17,6 +17,7 @@ export default function LandingPage() {
       <header className="border-b border-slate-100 bg-white/70 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between w-full">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
+            <img src="/icon.png" alt="QRCup Logo" className="w-8 h-8 rounded-lg object-contain shadow-sm" />
             <span className="font-extrabold text-2xl tracking-tight text-slate-800">
               QRCup
             </span>

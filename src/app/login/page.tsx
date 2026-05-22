@@ -124,8 +124,9 @@ export default function LoginPage() {
       <div className="w-full max-w-md bg-white border border-slate-100 p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.02)] backdrop-blur-sm relative overflow-hidden">
         
         {/* Header */}
-        <div className="text-center space-y-3 mb-8 relative">
-          <Link href="/" className="inline-block hover:opacity-90 transition-opacity">
+        <div className="text-center space-y-3 mb-8 relative flex flex-col items-center">
+          <Link href="/" className="flex flex-col items-center gap-2 hover:opacity-90 transition-opacity">
+            <img src="/icon.png" alt="QRCup Logo" className="w-12 h-12 rounded-2xl object-contain shadow-sm mb-1" />
             <span className="font-extrabold text-3xl tracking-tight text-slate-800">
               QRCup
             </span>

@@ -38,9 +38,7 @@ export default async function DashboardLayout({
         <div className="space-y-8">
           {/* Logo Brand */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500 p-2 flex items-center justify-center shadow-sm shadow-emerald-500/10">
-              <Sparkles className="w-5 h-5 text-white" />
-            </div>
+            <img src="/icon.png" alt="QRCup Logo" className="w-9 h-9 rounded-xl object-contain shadow-sm border border-slate-100/50" />
             <div className="flex flex-col">
               <span className="font-extrabold text-base tracking-tight text-slate-800 group-hover:text-emerald-600 transition-colors leading-none">
                 QRCup
