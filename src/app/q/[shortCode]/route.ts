@@ -50,16 +50,14 @@ export async function GET(
 
       qrCode = data as QRData;
 
-      // Fetch owner's plan from users table
+      // Fetch owner's plan and email from users table in a single query
       const { data: profile } = await supabase
         .from('users')
-        .select('plan, email:id')
+        .select('plan, email')
         .eq('id', data.user_id)
         .single();
 
-      // Check if admin email via auth
-      const { data: authUser } = await supabase.auth.admin.getUserById(data.user_id);
-      const isAdmin = authUser?.user?.email === 'admin@qrcup.com';
+      const isAdmin = profile?.email === 'admin@qrcup.com';
       ownerPlan = isAdmin ? 'pro' : (profile?.plan || 'free') as 'free' | 'pro';
 
       // Write-back to Redis cache with owner_plan (24 hours TTL = 86400s)

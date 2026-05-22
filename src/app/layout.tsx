@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://qrcup.vercel.app'),
   title: 'QRCup | พิมพ์ป้ายคิวอาร์โค้ดครั้งเดียว เปลี่ยนลิงก์ปลายทางได้ตลอดชีพ',
   description: 'สร้างคิวอาร์โค้ดอัจฉริยะสำหรับร้านค้า เปลี่ยนลิงก์ปลายทางได้ตลอดเวลาโดยไม่ต้องปริ้นท์ป้ายใหม่ หมดปัญหาสแกนคิวอาร์ใน LINE แล้วค้าง ดึงลูกค้าวาร์ปเข้าแอป Shopee, TikTok Shop, และ Instagram ของคุณได้ทันที',
   keywords: [
@@ -67,7 +68,20 @@ export default function RootLayout({
       lang="th"
       className={`${prompt.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#FCFAF6] text-slate-800">{children}</body>
+      <body className="min-h-full flex flex-col bg-[#FCFAF6] text-slate-800">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "QRCup",
+              "url": "https://qrcup.vercel.app"
+            })
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

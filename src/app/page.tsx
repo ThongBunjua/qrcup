@@ -43,15 +43,15 @@ export default function LandingPage() {
       {/* 2. HERO SECTION */}
       <section className="px-6 py-20 sm:py-28 flex flex-col items-center text-center max-w-4xl mx-auto space-y-8 relative">
         {/* Simple & Fast Badge */}
-        <span className="inline-flex items-center gap-1.5 bg-emerald-50/80 text-emerald-700 text-xs font-semibold px-4 py-2 rounded-full border border-emerald-100/40 shadow-sm">
-          <Zap className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-          <span>⚡ สแกนง่าย ได้หน้าร้านเดิม ไม่ต้องปริ้นท์ใหม่</span>
+        <span className="inline-flex items-center gap-1.5 bg-slate-100/70 text-slate-600 text-xs font-semibold px-4 py-2 rounded-full border border-slate-200/50 shadow-sm">
+          <Zap className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+          <span>สแกนง่าย ได้หน้าร้านเดิม ไม่ต้องปริ้นท์ใหม่</span>
         </span>
 
         {/* Hero Title */}
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-800 leading-tight">
           ปริ้นท์ป้ายคิวอาร์ครั้งเดียว <br />
-          <span className="text-emerald-600 bg-emerald-50/60 px-5 py-1.5 rounded-2xl inline-block mt-3 border border-emerald-100/30">
+          <span className="text-emerald-700 block mt-3">
             เปลี่ยนลิงก์ปลายทางได้ตลอดชีพ
           </span>
         </h1>
@@ -71,7 +71,7 @@ export default function LandingPage() {
           </Link>
           <a
             href="#pricing"
-            className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 font-semibold rounded-full text-sm flex items-center justify-center transition-all shadow-sm active:scale-95"
+            className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-slate-100 border border-slate-400 text-slate-700 font-semibold rounded-full text-sm flex items-center justify-center transition-all shadow-sm active:scale-95"
           >
             ดูราคาแพ็กเกจ
           </a>
